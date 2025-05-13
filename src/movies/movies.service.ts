@@ -81,4 +81,28 @@ export class MoviesService {
   
     return { message: 'Película eliminada correctamente' };
   }
+
+  async syncWithSwapi() {
+    const agent = new Agent({ rejectUnauthorized: false });
+    const response = await axios.get(this.swapiUrl, { httpsAgent: agent });
+    const movies = response.data.results;
+  
+    await this.movieModel.deleteMany({});
+  
+    const saved = await this.movieModel.insertMany(
+      movies.map((movie) => ({
+        title: movie.title,
+        episode_id: movie.episode_id,
+        opening_crawl: movie.opening_crawl,
+        director: movie.director,
+        producer: movie.producer,
+        release_date: movie.release_date,
+      })),
+    );
+  
+    return {
+      message: 'Películas sincronizadas desde SWAPI',
+      count: saved.length,
+    };
+  }
 }
