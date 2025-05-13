@@ -95,4 +95,11 @@ export class UsersService {
     }
   }
   
+  async findByEmail(email: string): Promise<UserDocument | null> {
+    try {
+      return await this.userModel.findOne({ email });
+    } catch (error) {
+      throw new InternalServerErrorException('Error al buscar el usuario');
+    }
+  }
 }
