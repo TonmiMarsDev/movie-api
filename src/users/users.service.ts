@@ -39,7 +39,6 @@ export class UsersService {
     try {
       return await this.userModel.find().exec();
     } catch (error) {
-      console.error(error);
       throw new InternalServerErrorException('Error al obtener los usuarios');
     }
   }
@@ -52,7 +51,6 @@ export class UsersService {
       }
       return user;
     } catch (error) {
-      console.error(error);
       if (error instanceof NotFoundException) {
         throw error;
       }
@@ -62,6 +60,11 @@ export class UsersService {
   
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     try {
+
+      if (updateUserDto.password) {
+        updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+      }
+      
       const updatedUser = await this.userModel
         .findByIdAndUpdate(id, updateUserDto, { new: true })
         .exec();
@@ -72,7 +75,6 @@ export class UsersService {
   
       return updatedUser;
     } catch (error) {
-      console.error(error);
       if (error instanceof NotFoundException) {
         throw error;
       }
@@ -87,7 +89,6 @@ export class UsersService {
         throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
       }
     } catch (error) {
-      console.error(error);
       if (error instanceof NotFoundException) {
         throw error;
       }
