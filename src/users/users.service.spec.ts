@@ -5,18 +5,17 @@ import { User } from './schemas/user.schema';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 
-// Mock Document
 const mockUserDoc = {
   _id: 'userId',
-  name: 'John Doe',
-  email: 'john@example.com',
+  name: 'Misael',
+  email: 'misael.dev@example.com',
   password: 'hashedpass',
   role: 'regular',
 };
 
 const createUserDto = {
-  name: 'John Doe',
-  email: 'john@example.com',
+  name: 'Misael',
+  email: 'misael.dev@example.com',
   password: '123456',
   role: 'regular',
 };
@@ -67,11 +66,9 @@ describe('UsersService', () => {
     it('should throw ConflictException if email already exists', async () => {
       jest.spyOn(bcrypt, 'hash').mockResolvedValue('hashedpass');
 
-      // Forzamos instancia que lanza error por duplicado
       const conflictInstance = new MockUserModel(createUserDto);
       conflictInstance.save = jest.fn().mockRejectedValue({ code: 11000 });
 
-      // Forzamos que Nest use esta instancia
       jest
         .spyOn(service as any, 'userModel')
         .mockImplementation(() => conflictInstance);
