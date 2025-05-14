@@ -1,7 +1,5 @@
-// src/movies/schemas/movie.schema.ts
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
-
 @Schema()
 export class Movie extends Document {
   @Prop({ required: true, unique: true  })
